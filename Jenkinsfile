@@ -81,52 +81,52 @@ pipeline {
             }
         }
 
-        // stage('Deploy to Remote with SSH') {
-        //     steps {
-        //         script {
-        //             try {
-        //                 sh '''
-        //                     # Create SSH key file
-        //                     echo "$REMOTE_KEY" > /tmp/remote_key
-        //                     chmod 600 /tmp/remote_key
+        stage('Deploy to Remote with SSH') {
+            steps {
+                script {
+                    try {
+                        sh '''
+                            # Create SSH key file
+                            echo "$REMOTE_KEY" > /tmp/remote_key
+                            chmod 600 /tmp/remote_key
 
-        //                     # Create deployment directory structure on remote server
-        //                     ssh -i /tmp/remote_key -o StrictHostKeyChecking=no -p $REMOTE_PORT $REMOTE_USER@$REMOTE_HOST '
-        //                         mkdir -p /usr/share/nginx/html/jenkins/khoiltn2/web-performance-project1-initial
-        //                         mkdir -p /usr/share/nginx/html/jenkins/khoiltn2/deploy
-        //                     '
+                            # Create deployment directory structure on remote server
+                            ssh -i /tmp/remote_key -o StrictHostKeyChecking=no -p $REMOTE_PORT $REMOTE_USER@$REMOTE_HOST '
+                                mkdir -p /usr/share/nginx/html/jenkins/khoiltn2/web-performance-project1-initial
+                                mkdir -p /usr/share/nginx/html/jenkins/khoiltn2/deploy
+                            '
 
-        //                     # Copy files to remote server
-        //                     scp -i /tmp/remote_key -o StrictHostKeyChecking=no -P $REMOTE_PORT -r index.html 404.html css/ js/ images/ $REMOTE_USER@$REMOTE_HOST:/usr/share/nginx/html/jenkins/khoiltn2/web-performance-project1-initial/
+                            # Copy files to remote server
+                            scp -i /tmp/remote_key -o StrictHostKeyChecking=no -P $REMOTE_PORT -r index.html 404.html css/ js/ images/ $REMOTE_USER@$REMOTE_HOST:/usr/share/nginx/html/jenkins/khoiltn2/web-performance-project1-initial/
 
-        //                     # Create timestamped deployment and manage versions
-        //                     TIMESTAMP=$(date +%Y%m%d%H%M%S)
-        //                     ssh -i /tmp/remote_key -o StrictHostKeyChecking=no -p $REMOTE_PORT $REMOTE_USER@$REMOTE_HOST "
-        //                         # Copy source to timestamped directory
-        //                         cp -r /usr/share/nginx/html/jenkins/khoiltn2/web-performance-project1-initial /usr/share/nginx/html/jenkins/khoiltn2/deploy/$TIMESTAMP
+                            # Create timestamped deployment and manage versions
+                            TIMESTAMP=$(date +%Y%m%d%H%M%S)
+                            ssh -i /tmp/remote_key -o StrictHostKeyChecking=no -p $REMOTE_PORT $REMOTE_USER@$REMOTE_HOST "
+                                # Copy source to timestamped directory
+                                cp -r /usr/share/nginx/html/jenkins/khoiltn2/web-performance-project1-initial /usr/share/nginx/html/jenkins/khoiltn2/deploy/$TIMESTAMP
 
-        //                         # Update symlink
-        //                         cd /usr/share/nginx/html/jenkins/khoiltn2/deploy
-        //                         rm -f current
-        //                         ln -s $TIMESTAMP current
+                                # Update symlink
+                                cd /usr/share/nginx/html/jenkins/khoiltn2/deploy
+                                rm -f current
+                                ln -s $TIMESTAMP current
 
-        //                         # Keep only 5 latest deployments
-        //                         ls -t | tail -n +6 | xargs -r rm -rf
+                                # Keep only 5 latest deployments
+                                ls -t | tail -n +6 | xargs -r rm -rf
 
-        //                         echo 'Remote deployment completed: $TIMESTAMP'
-        //                     "
+                                echo 'Remote deployment completed: $TIMESTAMP'
+                            "
 
-        //                     # Clean up
-        //                     rm -f /tmp/remote_key
-        //                 '''
-        //                 echo 'Remote deployment with SSH successful'
-        //             } catch (Exception e) {
-        //                 echo "Remote deployment failed: ${e.getMessage()}"
-        //                 throw e
-        //             }
-        //         }
-        //     }
-        // }
+                            # Clean up
+                            rm -f /tmp/remote_key
+                        '''
+                        echo 'Remote deployment with SSH successful'
+                    } catch (Exception e) {
+                        echo "Remote deployment failed: ${e.getMessage()}"
+                        throw e
+                    }
+                }
+            }
+        }
     }
 
     post {
