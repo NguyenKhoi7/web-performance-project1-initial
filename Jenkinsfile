@@ -99,46 +99,46 @@ pipeline {
             }
         }
 
-        stage('Deploy to Remote with SSH') {
-            steps {
-                script {
-                    try {
-                        // Sử dụng Jenkins credentials: remote_ssh_key
-                        withCredentials([sshUserPrivateKey(credentialsId: 'remote-ssh-key', keyFileVariable: 'SSH_KEY', usernameVariable: 'SSH_USER')]) {
-                            sh '''
-                                REMOTE_DIR="/usr/share/nginx/html/jenkins/khoiltn2"
-                                PROJECT_DIR="$REMOTE_DIR/web-performance-project1-initial"
-                                DEPLOY_DIR="$REMOTE_DIR/deploy"
+        // stage('Deploy to Remote with SSH') {
+        //     steps {
+        //         script {
+        //             try {
+        //                 // Sử dụng Jenkins credentials: remote_ssh_key
+        //                 withCredentials([sshUserPrivateKey(credentialsId: 'remote-ssh-key', keyFileVariable: 'SSH_KEY', usernameVariable: 'SSH_USER')]) {
+        //                     sh '''
+        //                         REMOTE_DIR="/usr/share/nginx/html/jenkins/khoiltn2"
+        //                         PROJECT_DIR="$REMOTE_DIR/web-performance-project1-initial"
+        //                         DEPLOY_DIR="$REMOTE_DIR/deploy"
 
-                                # Tạo cấu trúc thư mục trên server
-                                ssh -i $SSH_KEY -o StrictHostKeyChecking=no -p $REMOTE_PORT $SSH_USER@$REMOTE_HOST "
-                                    mkdir -p $PROJECT_DIR
-                                    mkdir -p $DEPLOY_DIR
-                                "
+        //                         # Tạo cấu trúc thư mục trên server
+        //                         ssh -i $SSH_KEY -o StrictHostKeyChecking=no -p $REMOTE_PORT $SSH_USER@$REMOTE_HOST "
+        //                             mkdir -p $PROJECT_DIR
+        //                             mkdir -p $DEPLOY_DIR
+        //                         "
 
-                                # Copy source code lên server
-                                scp -i $SSH_KEY -o StrictHostKeyChecking=no -P $REMOTE_PORT -r index.html 404.html css/ js/ images/ $SSH_USER@$REMOTE_HOST:$PROJECT_DIR/
+        //                         # Copy source code lên server
+        //                         scp -i $SSH_KEY -o StrictHostKeyChecking=no -P $REMOTE_PORT -r index.html 404.html css/ js/ images/ $SSH_USER@$REMOTE_HOST:$PROJECT_DIR/
 
-                                # Tạo bản release timestamp
-                                TIMESTAMP=$(date +%Y%m%d%H%M%S)
-                                ssh -i $SSH_KEY -o StrictHostKeyChecking=no -p $REMOTE_PORT $SSH_USER@$REMOTE_HOST "
-                                    cp -r $PROJECT_DIR $DEPLOY_DIR/$TIMESTAMP
-                                    cd $DEPLOY_DIR
-                                    rm -f current
-                                    ln -s $TIMESTAMP current
-                                    ls -t | tail -n +6 | xargs -r rm -rf
-                                    echo 'Remote deployment completed: $TIMESTAMP'
-                                "
-                            '''
-                        }
-                        echo '🌍 Remote deployment successful!'
-                    } catch (Exception e) {
-                        echo "❌ Remote deployment failed: ${e.getMessage()}"
-                        throw e
-                    }
-                }
-            }
-        }
+        //                         # Tạo bản release timestamp
+        //                         TIMESTAMP=$(date +%Y%m%d%H%M%S)
+        //                         ssh -i $SSH_KEY -o StrictHostKeyChecking=no -p $REMOTE_PORT $SSH_USER@$REMOTE_HOST "
+        //                             cp -r $PROJECT_DIR $DEPLOY_DIR/$TIMESTAMP
+        //                             cd $DEPLOY_DIR
+        //                             rm -f current
+        //                             ln -s $TIMESTAMP current
+        //                             ls -t | tail -n +6 | xargs -r rm -rf
+        //                             echo 'Remote deployment completed: $TIMESTAMP'
+        //                         "
+        //                     '''
+        //                 }
+        //                 echo '🌍 Remote deployment successful!'
+        //             } catch (Exception e) {
+        //                 echo "❌ Remote deployment failed: ${e.getMessage()}"
+        //                 throw e
+        //             }
+        //         }
+        //     }
+        // }
     }
 
     post {
