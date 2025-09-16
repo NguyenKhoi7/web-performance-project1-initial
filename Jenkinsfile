@@ -86,7 +86,7 @@ pipeline {
                 script {
                     try {
                         // Sử dụng Jenkins credentials: remote_ssh_key
-                        withCredentials([sshUserPrivateKey(credentialsId: 'remote_ssh_key', keyFileVariable: 'SSH_KEY', usernameVariable: 'SSH_USER')]) {
+                        withCredentials([sshUserPrivateKey(credentialsId: 'remote-ssh-key', keyFileVariable: 'SSH_KEY', usernameVariable: 'SSH_USER')]) {
                             sh '''
                                 REMOTE_DIR="/usr/share/nginx/html/jenkins/khoiltn2"
                                 PROJECT_DIR="$REMOTE_DIR/web-performance-project1-initial"
